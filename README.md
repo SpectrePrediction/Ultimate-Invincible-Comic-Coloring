@@ -33,7 +33,7 @@
  ├─Comic_Coloring   漫画上色(模型的训练，预测）</br>
  ├─Preparatory_Work 准备工作（大部分，并不包含讨论记录和调研）</br>
  │  └─Data_Spider   数据爬虫</br>
- │  └─~~（将会有数据清洗，预先等，尚未重新命名）~~ </br>
+ │  └─（~~将会有数据清洗，预先等，尚未重新命名~~） </br>
  └─Work_Logging     工作记录（其中个人文件夹包含log（所作所为）和updata_description（提交说明））</br>
  │  ├─Cursky</br>
  │  └─SpectrePrediction</br>
