@@ -1,4 +1,4 @@
-# Ultimate-Invincible-Comic-Coloring
+﻿# Ultimate-Invincible-Comic-Coloring
  基于pix2pix的对抗生成神经网络自动上色，包含docker、分布式、负载均衡部署以及多种多样的尝试
 
 
@@ -6,8 +6,8 @@
 
 |   姓名   | 职务    |
 | ---- | ---- |
-|  章云天    |   组长   |
-|   陈晨     |   组员   |
+|  Cursky    |   [所作所为](./Work_Logging/Cursky/log.me)   |
+|   SpectrePrediction     |   [所作所为](./Work_Logging/SpectrePrediction/log.me)   |
 |  更多...    |   还在来的路上   |
 
 ## 施工进度
