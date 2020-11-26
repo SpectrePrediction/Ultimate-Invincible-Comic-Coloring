@@ -25,9 +25,10 @@ def img_to_sketch(cv_3cannel_img, mode='1'):
 
 '''
 模板
-[x]
+[x]         x名字可改变
+[type: xxx] 声明此处应当为xxx类型
 
-def img_to_sketch_[mode](cv_3cannel_img):
+def img_to_sketch_[mode]([cv_3cannel_img]):
     pass..
     
     :return cv_img[type: np.array]
