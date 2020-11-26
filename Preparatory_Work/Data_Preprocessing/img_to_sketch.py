@@ -10,7 +10,7 @@ def img_to_sketch(cv_3cannel_img, mode='1'):
     :param mode: 使用的模式，效果各异，可以各种尝试一下后选择
     e.g:我们选择两种都用，但mode1的效果我们更喜欢
     e.g:需要完善更多方法的请按照格式创建函数(如下）
-    :return:
+    :return: 单通道图片
     """
     assert len(cv_3cannel_img.shape) == 3, "cannel应当为3,且是bgr"
 
