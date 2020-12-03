@@ -7,6 +7,10 @@ import os
 picture_header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1'}
 picture_root_url = 'https://konachan.net/post?page='
 # konachan虽然可以访问，但速度无法恭维
+"""
+# 若是f { } 这里报错，请修改使用其他方法即可 e.g: .format 等等
+# 旧版本python 也许支持有限 但这不是大问题
+"""
 
 
 def log_print(*args, **kwargs):
@@ -33,6 +37,7 @@ class PictureDownloader:
         注： 包含此页在内，例如第一页开始，num_page为1，则下载第一页结束
         :param url:         下载图片的根目录地址
         :param time_out:    访问超时时间设置，为None则不限
+        注:  更新，现在超过时间访问将会跳过，而不是直接抛出异常
         :param header:      访问头，使用默认即可
         :param is_show_progress:  是否展示进度条
         注: 在cmd等不支持彩色的命令框 log_print函数无法发挥他颜色的效果
@@ -60,25 +65,34 @@ class PictureDownloader:
 
         progress = self.show_progress(self.end_page - self.star_page)
 
-        log_print("正在获取图片下载地址 from {0}".format(self.url))
+        log_print(f"正在获取图片下载地址 from {self.url}")
         temp_list = list()
 
         for page in range(self.star_page, self.end_page):
 
             temp_url = self.url + str(page)
 
-            html = requests.get(temp_url, headers=self.header, timeout=self.time_out).text
-            soup = BeautifulSoup(html, 'html.parser')
+            try:
 
-            for img in soup.find_all('img', class_="preview"):
-                target_url = img['src']
-                temp_list.append(target_url)
+                html = requests.get(temp_url, headers=self.header, timeout=self.time_out).text
+                soup = BeautifulSoup(html, 'html.parser')
+
+                for img in soup.find_all('img', class_="preview"):
+                    target_url = img['src']
+                    temp_list.append(target_url)
+
+            # 若是f {page} 这里报错，请修改使用其他方法即可 e.g: .format 等等
+            except requests.exceptions.ReadTimeout:
+                log_print(f"ReadTimeout countinue: 跳过第{page} 页")
+
+            except requests.exceptions.ConnectionError:
+                log_print(f"Connectiontimed out countinue: 跳过第{page} 页")
 
             if self.is_show_progress:
                 sys.stdout.flush()
                 sys.stdout.write('\r' + next(progress))
             else:
-                log_print("第{0}页获取完, 还有{1}页".format(page, self.end_page - page - 1))
+                log_print(f"第{page}页获取完, 还有{self.end_page - page - 1}页")
 
         sys.stdout.write('\n')
         log_print("一帆风顺， 准备下载")
@@ -116,11 +130,19 @@ class PictureDownloader:
             save_path = save_root_path + picture_name
 
             if os.path.exists(save_path) and not is_cover:
-                log_print("{0}文件已存在且is_cover是False:跳过保存".format(picture_name))
+                log_print(f"{picture_name}文件已存在且is_cover是False:跳过保存")
                 continue
 
-            picture_data = requests.get(picture_url, timeout=self.time_out).content
-            self.save_picture(picture_data, save_path)
+            try:
+
+                picture_data = requests.get(picture_url, timeout=self.time_out).content
+                self.save_picture(picture_data, save_path)
+
+            except requests.exceptions.ReadTimeout:
+                log_print(f"ReadTimeout countinue: 跳过{picture_name}图片")
+
+            except requests.exceptions.ConnectionError:
+                log_print(f"Connectiontimed out countinue: 跳过{picture_name}图片")
 
             if self.is_show_progress:
                 sys.stdout.flush()
@@ -143,5 +165,5 @@ class PictureDownloader:
             yield print_str
 
 
-pd = PictureDownloader(star_page=0, num_page=20, is_show_progress=True)
+pd = PictureDownloader(star_page=0, num_page=20, is_show_progress=True, time_out=1)
 pd.download_to("./downimg")  # 应当有此目录，程序并不会自动创建
