@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <script type="text/javascript">
+            function showImg(input) {
+                var file = input.files[0];
+                var reader = new FileReader();
+
+                // 图片读取成功回调函数
+                reader.onload = function(e) {
+                    document.getElementById('imgShow').src = e.target.result
+                };
+
+                let size = file.size / 1024;
+
+                if (size > 1024){
+                    document.getElementById('submitButton').value = "暂时只支持小于1mb的图像哦";
+                    document.getElementById('imgShow').src = "";
+                    return false
+                }
+
+                reader.readAsDataURL(file);
+                document.getElementById('submitButton').value = "提交！";
+            }
+
+            function checkForm(){
+                var data = document.getElementById('image').files[0];
+
+                if(data==undefined){
+                    //验证不通过
+                    document.getElementById('submitButton').value = "请先选择图片";
+                    return false;
+                }
+
+                let size = data.size / 1024;
+
+                if (size > 1024){
+                    document.getElementById('submitButton').value = "暂时只支持小于1mb的图像哦";
+                    document.getElementById('imgShow').src = "";
+                    return false
+                }
+
+                document.getElementById("upData").submit();
+                document.getElementById('submitButton').value = "请稍微等待";
+            }
+        </script>
+
+        <title>图像上色</title>
+
+    </head>
+
+    <body>
+
+            <form id="upData" method="post" enctype="multipart/form-data" action="comic_coloring/">
+
+                {% csrf_token %}
+                <input name="image" type="file" id="image" accept="image/jpeg, image/png, image/jpg" onchange="showImg(this);" />
+                <!--<button type="submit">提交</button>-->
+                <input id="submitButton" type="button" value="请先选择图片" onclick="checkForm();">
+                <!--<button id="submitButton" type="button"  onclick="checkForm();">提交</button>-->
+            <br />
+                <img name="imgShow" id="imgShow" src="" />
+            <br />
+            </form>
+
+            <!--</div>-->
+                <!--<div style="display:none">-->
+            <!--</div>-->
+
+
+    </body>
+
+</html>
