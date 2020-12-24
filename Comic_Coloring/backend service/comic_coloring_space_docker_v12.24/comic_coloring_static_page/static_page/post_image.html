@@ -1,0 +1,278 @@
+<html>
+    <head>
+        <!--<meta name="referrer" content="no-referrer">-->
+        <!--<meta http-equiv="Content-Type" content="text/html; charset=utf-8">-->
+        <style>
+
+            html{
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                /*font-style: sans-serif;*/
+            }
+            body{
+                width: 100%;
+                height: 100%;
+                font-family: 'Open Sans',sans-serif;
+                margin: 0;
+                background-color: #4A374A;
+                /*background-color: #faebd7;*/
+            }
+            #imgShow {
+                float: left;
+                position: relative;
+                margin-left: 100px;
+                margin-top: 1px;
+
+                margin-bottom: 10px;
+                /*position: absolute;*/
+                /*top: 50%;*/
+                /*left: 20%;*/
+                /*margin: -150px 0 0 -150px;*/
+                width: 512px;
+                /*height: 512px;*/
+            }
+            #imgReturn{
+                float: left;
+                position: relative;
+                margin-left: 100px;
+                margin-top: 1px;
+                /*position: absolute;*/
+                /*top: 50%;*/
+                /*left: 20%;*/
+                /*margin: -150px 0 0 -150px;*/
+                width: 512px;
+            }
+            #imgspace{
+                /*float: left;*/
+                position: absolute;
+                /*overflow: auto;*/
+            }
+            h1{
+                color: #fff;
+                text-shadow:0 0 10px;
+                letter-spacing: 1px;
+                text-align: center;
+                font-size: 2em;
+                margin: 0.67em 0;
+            }
+            h5{
+                color: #fff;
+                text-shadow:0 0 10px;
+                letter-spacing: 1px;
+                text-align: center;
+                /*font-size: 0.75em;*/
+                margin: 0.2em 0;
+            }
+            h6{
+                color: #fff;
+                text-shadow:0 0 10px;
+                letter-spacing: 1px;
+                text-align: center;
+                /*font-size: 0.4em;*/
+                margin: 0.2em 0;
+            }
+            div{
+                margin: 2.5em 4em 1.5em 2em;
+
+            }
+            div input {
+                /*position: absolute;*/
+                width: 300px;
+                height: 40px;
+                outline: none;
+                padding: 8px;
+                font-size: 13px;
+                color: #fff;
+                margin-left: 10%;
+                margin-right: 10%;
+                /*margin: 0 auto;*/
+                text-shadow: 1px 1px 1px;
+                border-top: 1px solid #312E3D;
+                border-left: 1px solid #312E3D;
+                border-right: 1px solid #312E3D;
+                border-bottom: 1px solid #56536A;
+                border-radius: 4px;
+                background-color: #2D2D3F;
+
+            }
+            div #submitButton{
+                position: absolute;
+                width: 300px;
+                min-height: 20px;
+                /*display: block;*/
+                background-color: #4a77d4;
+                border: 1px solid #3762bc;
+                color: #fff;
+                padding: 9px 14px;
+                font-size: 15px;
+                line-height: normal;
+                border-radius: 5px;
+                /*margin: 0;*/
+            }
+            #footer{
+                position: fixed;
+                bottom: 1px;
+                left: 42%;
+            }
+
+        </style>
+        <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js" ></script>
+        <script type="text/javascript">
+            $ . ajaxTransport ( "+binary" , function ( options , originalOptions , jqXHR ) {
+                // check for conditions and support for blob / arraybuffer response type
+                if ( window . FormData && ( ( options . dataType && ( options . dataType == 'binary' ) ) || ( options . data && ( ( window . ArrayBuffer && options . data instanceof ArrayBuffer ) || ( window . Blob && options . data instanceof Blob ) ) ) ) )
+                {
+                    return {
+                        // create new XMLHttpRequest
+                        send : function ( headers , callback ) {
+                            // setup all variables
+                            var xhr = new XMLHttpRequest ( ) ,
+                            url = options . url ,
+                            type = options . type ,
+                            async = options . async || true ,
+                            // blob or arraybuffer. Default is blob
+                            dataType = options . responseType || "blob" ,
+                            data = options . data || null ,
+                            username = options . username || null ,
+                            password = options . password || null ;
+                            xhr.addEventListener ( 'load' , function() {
+                                var data = { } ;
+                                data [ options . dataType ] = xhr . response ;
+                                // make callback and send data
+                                callback ( xhr . status , xhr . statusText , data , xhr . getAllResponseHeaders ( ) ) ;
+                            } ) ;
+
+                            xhr . open ( type , url , async , username , password ) ;
+                            // setup custom headers
+                            for ( var i in headers ) {
+                                xhr . setRequestHeader ( i , headers [ i ] ) ;
+                            }
+                            xhr . responseType = dataType ;
+                            xhr . send ( data ) ;
+                        } ,
+                        abort : function ( ) {
+                            jqXHR . abort ( ) ;
+                        }
+                    } ;
+                }
+            } ) ;
+
+            function showImg(input) {
+                var file = input.files[0];
+                var reader = new FileReader();
+
+                // 图片读取成功回调函数
+                reader.onload = function(e) {
+                    document.getElementById('imgShow').src = e.target.result
+                    document.getElementById('imgReturn').src = "";
+                };
+
+                let size = file.size / 1024;
+
+                if (size > 1024){
+                    document.getElementById('submitButton').value = "暂时只支持小于1mb的图像哦";
+                    document.getElementById('imgShow').src = "";
+                    document.getElementById('imgReturn').src = "";
+                    return false
+                }
+
+                reader.readAsDataURL(file);
+                document.getElementById('submitButton').value = "提交！";
+            }
+
+            function checkForm(){
+                var data = document.getElementById('image').files[0];
+
+                if(data==undefined){
+                    //验证不通过
+                    document.getElementById('submitButton').value = "请先选择图片";
+                    return false;
+                }
+
+                let size = data.size / 1024;
+
+                if (size > 1024){
+                    document.getElementById('submitButton').value = "暂时只支持小于1mb的图像哦";
+                    document.getElementById('imgShow').src = "";
+                    document.getElementById('imgReturn').src = "";
+                    return false
+                }
+
+                if (document.getElementById('submitButton').value == "成功")
+                {
+                    return false
+                }
+
+                // document.getElementById("upData").submit();
+                var data = new FormData($( "#upData" )[0]);
+                $.ajax({
+                type:'post',
+                url:"comic_coloring/",
+                cache: false,    //上传文件不需缓存
+                processData: false, //需设置为false。因为data值是FormData对象，不需要对数据做处理
+                    // 同时为了实现ajax的二进制读取，不允许为True，否则他会尝试转化为str
+                contentType: false, //需设置为false。因为是FormData对象，且已经声明了属性enctype="multipart/form-data"
+                data:data,
+                dataType:'binary',
+                beforeSend: function(xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                },
+                success:function(data){
+                    var a = new FileReader();
+                    a.onload = function (e) {
+                        document.getElementById('imgReturn').src = e.target.result;
+                    };
+                    a.readAsDataURL(data);
+                    // var objectUrl = URL.createObjectURL(data);
+                    // document.getElementById('imgReturn').src = objectUrl;
+                    // 直接使用blob会导致手机浏览器无法直接保存
+                    document.getElementById('submitButton').value = "成功"
+                    // alert(data);
+                },
+                error:function(){
+                    document.getElementById('submitButton').value = "意外的请求失败";
+                }});
+
+                document.getElementById('submitButton').value = "请稍微等待";
+            }
+
+
+            // function getResult(e) {
+            //         document.getElementById('imgShow').src = e.target.result;
+            // }
+
+        </script>
+
+        <title>图像上色</title>
+
+    </head>
+
+    <body>
+
+        <h1>图像上色</h1>
+        <h5>你所上传的图片和生成图片均不会被服务器所保存</h5>
+        <h6>请使用动漫线稿图上色效果更佳 大小限制在1M以下</h6>
+
+        <form id="upData" method="post" enctype="multipart/form-data" action="comic_coloring/">
+
+            {% csrf_token %}
+            <div>
+                <input name="image" type="file" id="image" accept="image/jpeg, image/png, image/jpg" onchange="showImg(this);" />
+                <input id="submitButton" type="button" value="请先选择图片" onclick="checkForm();">
+                <!--<button id="submitButton" type="button"  onclick="checkForm();">提交</button>-->
+            </div>
+            <br />
+            <div id="imgspace">
+                <img name="imgShow" id="imgShow" src="" />
+                <img name="imgReturn" id="imgReturn" src="" />
+            </div>
+            <br />
+        </form>
+
+        <h6 id="footer">来自大作业小组 线稿漫画上色</h6>
+
+
+    </body>
+
+</html>
